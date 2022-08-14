@@ -1,12 +1,14 @@
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+// import { useDispatch, useSelector } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { authSelectors, authOperations } from '../../redux/auth';
 import Button from 'react-bootstrap/Button';
 
 import avatar from './default-avatar.png';
 
-export default function SignedIn() {
-  const userName = useSelector(authSelectors.getUsername);
-  const dispatch = useDispatch();
+const SignedIn: React.FC = () => {
+  const userName = useAppSelector(authSelectors.getUsername);
+  const dispatch = useAppDispatch();
   const handleLogOut = () => {
     dispatch(authOperations.logOut());
   };
@@ -32,3 +34,5 @@ export default function SignedIn() {
     </nav>
   );
 }
+
+export default SignedIn;

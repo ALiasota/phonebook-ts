@@ -1,8 +1,8 @@
-import { createReducer } from '@reduxjs/toolkit';
-import { createAction } from '@reduxjs/toolkit';
+import { createReducer, createAction, PayloadAction } from '@reduxjs/toolkit';
+
 
 export const changeFilter = createAction('filter');
 
 export const filter = createReducer('', {
-  [changeFilter]: (_, { payload }) => payload,
+  changeFilter: (_:any, action: PayloadAction<string> ) => action.payload,
 });

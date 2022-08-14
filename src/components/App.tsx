@@ -1,8 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import React, { Suspense, lazy } from 'react';
+import { useAppSelector, useAppDispatch } from '../redux/hooks';
+// import { useDispatch, useSelector } from 'react-redux';
+import React, {useEffect, Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { authOperations, authSelectors } from '../redux/auth';
 import PrivateRoute from './PrivateRoute';
@@ -13,9 +13,9 @@ const Register = lazy(() => import('./Register'));
 const Login = lazy(() => import('./LogIn'));
 const Contacts = lazy(() => import('./Contacts'));
 
-const App = () => {
-  const dispatch = useDispatch();
-  const isFetchingCurrentUser = useSelector(authSelectors.getIsFetchingCurrent);
+const App: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const isFetchingCurrentUser = useAppSelector(authSelectors.getIsFetchingCurrent);
   useEffect(() => {
     dispatch(authOperations.fetchCurrentUser());
   }, [dispatch]);

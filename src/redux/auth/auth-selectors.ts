@@ -1,10 +1,12 @@
-const getIsLoggedIn = state => state.auth.isLoggedIn;
+import type { RootState } from '../store';
 
-const getUsername = state => state.auth.user.name;
+const getIsLoggedIn = (state: RootState) => state.auth.isLoggedIn;
 
-const getError = state => state.auth.error;
+const getUsername = (state: RootState) => state.auth.user.name;
 
-const getIsFetchingCurrent = state => state.auth.isFetchingCurrentUser;
+const getError = (state: RootState) => state.auth.error;
+
+const getIsFetchingCurrent = (state: RootState) => state.auth.isFetchingCurrentUser;
 
 const authSelectors = {
   getIsLoggedIn,

@@ -1,10 +1,12 @@
 import axios from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import type { RootState } from '../store';
+import { IUser, IUserForm } from '../../types/stateTypes';
 
 axios.defaults.baseURL = 'https://connections-api.herokuapp.com';
 
 const token = {
-  set(token) {
+  set(token: string) {
     axios.defaults.headers.common.Authorization = token;
   },
   unset() {
@@ -14,10 +16,12 @@ const token = {
 
 const register = createAsyncThunk(
   'auth/register',
-  async (credentials, { rejectWithValue }) => {
+  async (credentials:IUserForm, { rejectWithValue }) => {
     try {
       const { data } = await axios.post('users/signup', credentials);
-      token.set(data.token);
+      const d:IUser = data;
+      token.set(d.token);
+     
       return data;
     } catch ({ message }) {
       alert(message);
@@ -28,12 +32,12 @@ const register = createAsyncThunk(
 
 const logIn = createAsyncThunk(
   'auth/login',
-  async (credentials, { rejectWithValue }) => {
+  async (credentials:IUserForm, { rejectWithValue }) => {
     try {
       const { data } = await axios.post('users/login', credentials);
-
-      token.set(data.token);
-      return data;
+      const d:IUser = data;
+      token.set(d.token);
+      return d;
     } catch ({ message }) {
       alert(message);
       return rejectWithValue(message);
@@ -54,13 +58,13 @@ const logOut = createAsyncThunk('auth/logout', async () => {
 const fetchCurrentUser = createAsyncThunk(
   'auth/refresh',
   async (_, thunkAPI) => {
-    const state = thunkAPI.getState();
+    const state:RootState = thunkAPI.getState();
 
     const persistedToken = state.auth.token;
 
     if (persistedToken === null) {
       console.log('No user');
-      return thunkAPI.rejectWithValue();
+      return thunkAPI.rejectWithValue('');
     }
 
     token.set(persistedToken);
