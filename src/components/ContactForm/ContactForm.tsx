@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
-import propTypes from 'prop-types';
 import {
   useAddContactMutation,
   useFetchContactsQuery,
   useChangeContactMutation,
-} from 'redux/contacts/contacts-slice';
-
-const ContactForm = ({
+} from '../../redux/contacts/contacts-slice';
+import { contactFormType } from '../../types/componentsTypes';
+const ContactForm: React.FC<contactFormType> = ({
   btn = 'Add contact',
   changedName = '',
   changedNumber = '',
@@ -21,7 +20,7 @@ const ContactForm = ({
   const { data } = useFetchContactsQuery();
   const contacts = data;
 
-  const handleSubmit = e => {
+  const handleSubmit = (e: HTMLFormElement) => {
     e.preventDefault();
 
     if (name === '' || number === '') {
@@ -47,11 +46,11 @@ const ContactForm = ({
     setNumber('');
   };
 
-  const handleChangeName = e => {
+  const handleChangeName = (e:HTMLFormElement):void => {
     setName(e.target.value);
   };
 
-  const handleChangeNumber = e => {
+  const handleChangeNumber = (e:HTMLFormElement):void => {
     setNumber(e.target.value);
   };
 
@@ -87,12 +86,5 @@ const ContactForm = ({
   );
 };
 
-ContactForm.propTypes = {
-  changedName: propTypes.string,
-  changedId: propTypes.string,
-  changedNumber: propTypes.string,
-  btn: propTypes.string,
-  closeModal: propTypes.func,
-};
 
 export default ContactForm;

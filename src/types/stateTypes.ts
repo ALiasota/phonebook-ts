@@ -1,3 +1,4 @@
+
 export interface IAuth {
         user: { name: null | string, email: null | string };
         token: null | string;
@@ -16,4 +17,9 @@ export interface IUserForm {
     name?: string
     email: string;
     password: string;
+}
+
+export type Contact = {
+    name: string,
+    number: string
 }

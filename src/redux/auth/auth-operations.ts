@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import type { RootState } from '../store';
-import { IUser, IUserForm } from '../../types/stateTypes';
+import { IUserForm, IAuth } from '../../types/stateTypes';
+
 
 axios.defaults.baseURL = 'https://connections-api.herokuapp.com';
 
@@ -14,33 +15,38 @@ const token = {
   },
 };
 
-const register = createAsyncThunk(
+const register = createAsyncThunk<IAuth, IUserForm, {rejectValue: string}>(
   'auth/register',
-  async (credentials:IUserForm, { rejectWithValue }) => {
+  async (credentials, { rejectWithValue }) => {
     try {
       const { data } = await axios.post('users/signup', credentials);
-      const d:IUser = data;
-      token.set(d.token);
-     
+      if(data.token) {
+        token.set(data.token);
+      }           
       return data;
     } catch ({ message }) {
-      alert(message);
+      if(typeof message === 'string' ) {
+        alert(message);
       return rejectWithValue(message);
+      }      
     }
   }
 );
 
-const logIn = createAsyncThunk(
+const logIn = createAsyncThunk<IAuth, IUserForm, {rejectValue: string}>(
   'auth/login',
-  async (credentials:IUserForm, { rejectWithValue }) => {
+  async (credentials, { rejectWithValue }) => {
     try {
       const { data } = await axios.post('users/login', credentials);
-      const d:IUser = data;
-      token.set(d.token);
-      return d;
+      if(data.token) {
+        token.set(data.token);
+      }      
+      return data;
     } catch ({ message }) {
-      alert(message);
-      return rejectWithValue(message);
+      if(typeof message === 'string') {
+        alert(message);
+        return rejectWithValue(message);
+      }  
     }
   }
 );
@@ -55,11 +61,11 @@ const logOut = createAsyncThunk('auth/logout', async () => {
   }
 });
 
-const fetchCurrentUser = createAsyncThunk(
+const fetchCurrentUser = createAsyncThunk<{name:string, email:string}, undefined, { state: RootState}>(
   'auth/refresh',
   async (_, thunkAPI) => {
-    const state:RootState = thunkAPI.getState();
-
+    const state = thunkAPI.getState();
+    
     const persistedToken = state.auth.token;
 
     if (persistedToken === null) {
@@ -72,8 +78,10 @@ const fetchCurrentUser = createAsyncThunk(
       const { data } = await axios.get('/users/current');
       return data;
     } catch {
+      token.unset();
       console.error();
-    }
+    } 
+      
   }
 );
 

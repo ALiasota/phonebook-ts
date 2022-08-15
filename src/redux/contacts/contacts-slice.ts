@@ -1,22 +1,23 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { RootState } from '../store';
-
+import type { Contact } from '../../types/stateTypes'
+import { RootState } from '../store';
 
 // Define a service using a base URL and expected endpoints
 export const contactsApi = createApi({
   reducerPath: 'contactsApi',
   baseQuery: fetchBaseQuery({
     baseUrl: 'https://connections-api.herokuapp.com/',
-    prepareHeaders: (headers, { getState }) => {
-      const state:RootState = getState();
-      const token = state.auth.token;
-      headers.set('Authorization', token);
-      return headers;
+    prepareHeaders: (headers, { getState }) => {      
+      const token = (getState() as RootState).auth.token;
+      if(typeof token === 'string') {
+        headers.set('Authorization', token);        
+      }     
+      return headers; 
     },
   }),
   tagTypes: ['Contacts'],
   endpoints: build => ({
-    fetchContacts: build.query({
+    fetchContacts: build.query<Contact[], undefined>({
       query: () => `/contacts`,
       providesTags: ['Contacts'],
     }),
